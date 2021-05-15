@@ -27,6 +27,3 @@ export const someTasks: Task[] = [
     tag: "low priority",
   },
 ];
-
-export const sleep = (x: number) =>
-  new Promise((resolve) => setTimeout(resolve, x));

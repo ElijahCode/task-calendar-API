@@ -1,5 +1,5 @@
 import { TaskCalendar } from "./TaskCalendarClass";
-import { someTask, sleep, someTasks } from "../../utils/utils";
+import { someTask, someTasks } from "../../utils/utils";
 import { Task } from "../../types/Task";
 
 const taskCalendar = new TaskCalendar();

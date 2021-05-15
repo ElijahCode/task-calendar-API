@@ -1,6 +1,6 @@
 import { ITaskCalendar } from "../../Interface/ITaskCalenderAPI";
 import { Task } from "../../types/Task";
-import { MAX_VALUE_OF_ID, MIN_VALUE_OF_ID } from './config'
+import { MAX_VALUE_OF_ID, MIN_VALUE_OF_ID } from "./config";
 
 export class TaskCalendar implements ITaskCalendar {
   tasksID: Task["id"][] = [];
@@ -82,7 +82,9 @@ export class TaskCalendar implements ITaskCalendar {
 
   private async createID(task: Task): Promise<Task> {
     const storage = JSON.parse(localStorage.getItem("taskCalendar") as string);
-    const preID = Math.floor(Math.random() * (MAX_VALUE_OF_ID - MIN_VALUE_OF_ID) + MIN_VALUE_OF_ID);
+    const preID = Math.floor(
+      Math.random() * (MAX_VALUE_OF_ID - MIN_VALUE_OF_ID) + MIN_VALUE_OF_ID
+    );
 
     const id =
       storage.filter((el: Task) => el.id === preID).length === 0

@@ -9,7 +9,7 @@ export interface ITaskCalendar {
   delete(id: Task["id"]): Promise<void>;
 
   // сгрести в один filter через перегрузку?
-  filterByData(filtredDate: Date): Promise<Task[]>;
+  filterByDate(filtredDate: Date): Promise<Task[]>;
   filterByDescription(description: Task["description"]): Promise<Task[]>;
   filterByStatus(status: Task["status"]): Promise<Task[]>;
   filterByTag(tag: Task["tag"]): Promise<Task[]>;

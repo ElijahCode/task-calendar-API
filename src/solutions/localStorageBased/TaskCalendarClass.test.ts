@@ -1,61 +1,75 @@
 import { TaskCalendar } from "./TaskCalendarClass";
 import { someTask, sleep, someTasks } from "../../utils/utils";
+import { Task } from "../../types/Task";
 
 const taskCalendar = new TaskCalendar();
 
 it("LocalStorage have taskCalendar", async () => {
-  expect(localStorage.getItem("taskCalendar")).toBe(JSON.stringify([]));
+  expect(localStorage.getItem("taskCalendar")).toEqual(JSON.stringify([]));
 });
 
-it("task calendar must contain task", async () => {
+it("task calendar must contain task with different ID", async () => {
   await taskCalendar.createTask(someTask);
-
-  await sleep(10);
 
   expect(localStorage.getItem("taskCalendar")).toEqual(
     JSON.stringify([someTask])
   );
+  // eslint-disable-next-line no-restricted-syntax
+  for (const el of [someTask, someTask, someTask]) {
+    // eslint-disable-next-line no-await-in-loop
+    await taskCalendar.createTask(el);
+  }
+
+  const storage = JSON.parse(localStorage.getItem("taskCalendar") as string);
+  let idIsDuplicated = false;
+  storage
+    .map((el: Task) => el.id)
+    .sort()
+    .forEach((el: Task["id"], index: number) => {
+      idIsDuplicated = el === storage[index + 1] ? true : idIsDuplicated;
+    });
+  expect(idIsDuplicated).toBe(false);
 });
 
 it("Must return task", async () => {
   const result = await taskCalendar.read(taskCalendar.tasksID[0]);
 
-  await sleep(10);
-
-  expect(result).toEqual(someTask);
+  expect(result).toEqual(
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+  );
 });
 
 it("Must change task", async () => {
   await taskCalendar.update(taskCalendar.tasksID[0], { status: "done" });
 
-  const result = { ...someTask };
-  result.status = "done";
+  const resultTask = await taskCalendar.read(taskCalendar.tasksID[0]);
 
-  await sleep(10);
-
-  expect(localStorage.getItem("taskCalendar")).toEqual(
-    JSON.stringify([result])
-  );
+  expect(resultTask.status).toBe("done");
 });
 
 it("Must delete task", async () => {
-  await taskCalendar.delete(taskCalendar.tasksID[0]);
-
-  await sleep(10);
-
-  expect(localStorage.getItem("tasksCalendar")).toEqual(JSON.stringify([]));
+  const IDs = taskCalendar.tasksID;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const id of IDs) {
+    // eslint-disable-next-line no-await-in-loop
+    await taskCalendar.delete(id);
+  }
+  expect(localStorage.getItem("taskCalendar")).toEqual(JSON.stringify([]));
+  expect(taskCalendar.tasksID).toEqual([]);
 });
 
 it("Must filter tasks by data", async () => {
-  someTasks.forEach(async (el) => {
-    await taskCalendar.createTask(el);
-  });
+  // eslint-disable-next-line no-restricted-syntax
+  for (const task of someTasks) {
+    // eslint-disable-next-line no-await-in-loop
+    await taskCalendar.createTask(task);
+  }
 
-  const result = await taskCalendar.filterByData(new Date(2021, 5, 11));
+  const result = await taskCalendar.filterByDate(new Date(2021, 5, 11));
 
-  await sleep(10);
-
-  expect(result).toEqual(someTask);
+  expect(result[0]).toEqual(
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+  );
 });
 
 it("Must filter tasks by description", async () => {
@@ -63,23 +77,23 @@ it("Must filter tasks by description", async () => {
     "Prepare to my birthday!"
   );
 
-  await sleep(10);
-
-  expect(result).toEqual(someTask);
+  expect(result[0]).toEqual(
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+  );
 });
 
 it("Must filter tasks by status", async () => {
   const result = await taskCalendar.filterByStatus("waiting to get it in work");
 
-  await sleep(10);
-
-  expect(result).toEqual(someTask);
+  expect(result[0]).toEqual(
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+  );
 });
 
 it("Must filter tasks by tag", async () => {
   const result = await taskCalendar.filterByTag("regular priority");
 
-  await sleep(10);
-
-  expect(result).toEqual(someTask);
+  expect(result[0]).toEqual(
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+  );
 });

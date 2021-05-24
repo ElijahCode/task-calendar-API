@@ -1,8 +1,8 @@
-import { TaskCalendar } from "./TaskCalendarClass";
+import { LocalStorage } from "./TaskCalendarClass";
 import { someTask, someTasks } from "../../utils/utils";
 import { Task } from "../../types/Task";
 
-const taskCalendar = new TaskCalendar();
+const taskCalendar = new LocalStorage.TaskCalendar();
 
 it("LocalStorage have taskCalendar", async () => {
   expect(localStorage.getItem("taskCalendar")).toEqual(JSON.stringify([]));

@@ -1,8 +1,8 @@
 import firebase from "firebase";
-import { TaskCalendarClass } from "./TaskCalendarClass";
+import { FireBase } from "./TaskCalendarClass";
 import { someTask, someTasks } from "../../utils/utils";
 
-const taskCalendar = new TaskCalendarClass("TestTasks");
+const taskCalendar = new FireBase.TaskCalendar("TestTasks");
 someTask.date = String(someTask.date);
 someTasks.map((el) => {
   const newEl = el;

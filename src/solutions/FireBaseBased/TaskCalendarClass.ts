@@ -56,7 +56,7 @@ export namespace FireBase {
           await firebase.database().ref(this.placement).once("value")
         ).val()
       );
-      return storage.filter((el: Task) => el.date === `${filtredDate}`);
+      return storage.filter((el: Task) => el.date === filtredDate.toString());
     }
 
     public async filterByDescription(

@@ -9,13 +9,8 @@ it("LocalStorage have taskCalendar", async () => {
 });
 
 it("task calendar must contain task with different ID", async () => {
-  await taskCalendar.createTask(someTask);
-
-  expect(localStorage.getItem("taskCalendar")).toEqual(
-    JSON.stringify([someTask])
-  );
   // eslint-disable-next-line no-restricted-syntax
-  for (const el of [someTask, someTask, someTask]) {
+  for (const el of [someTask, someTask, someTask, someTask]) {
     // eslint-disable-next-line no-await-in-loop
     await taskCalendar.createTask(el);
   }
@@ -28,6 +23,7 @@ it("task calendar must contain task with different ID", async () => {
     .forEach((el: Task["id"], index: number) => {
       idIsDuplicated = el === storage[index + 1] ? true : idIsDuplicated;
     });
+
   expect(idIsDuplicated).toBe(false);
 });
 
@@ -49,6 +45,9 @@ it("Must change task", async () => {
 
 it("Must delete task", async () => {
   const IDs = taskCalendar.tasksID;
+  expect(JSON.parse(localStorage.getItem("taskCalendar") as string)).not.toBe(
+    []
+  );
   // eslint-disable-next-line no-restricted-syntax
   for (const id of IDs) {
     // eslint-disable-next-line no-await-in-loop
@@ -73,27 +72,26 @@ it("Must filter tasks by data", async () => {
 });
 
 it("Must filter tasks by description", async () => {
-  const result = await taskCalendar.filterByDescription(
-    "Prepare to my birthday!"
-  );
+  const result = await taskCalendar.filterByDescription("Call dad!");
 
   expect(result[0]).toEqual(
-    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[1]
   );
 });
 
 it("Must filter tasks by status", async () => {
-  const result = await taskCalendar.filterByStatus("waiting to get it in work");
+  const result = await taskCalendar.filterByStatus("in work");
 
   expect(result[0]).toEqual(
-    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[2]
   );
 });
 
 it("Must filter tasks by tag", async () => {
   const result = await taskCalendar.filterByTag("regular priority");
 
-  expect(result[0]).toEqual(
-    JSON.parse(localStorage.getItem("taskCalendar") as string)[0]
-  );
+  expect(result).toEqual([
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[0],
+    JSON.parse(localStorage.getItem("taskCalendar") as string)[3],
+  ]);
 });

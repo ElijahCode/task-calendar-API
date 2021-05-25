@@ -3,12 +3,6 @@ import { FireBase } from "./TaskCalendarClass";
 import { someTask, someTasks } from "../../utils/utils";
 
 const taskCalendar = new FireBase.TaskCalendar("TestTasks");
-someTask.date = String(someTask.date);
-someTasks.map((el) => {
-  const newEl = el;
-  newEl.date = `${el.date}`;
-  return newEl;
-});
 
 afterAll(async () => {
   await firebase.database().ref(taskCalendar.placement).remove();
@@ -33,6 +27,10 @@ it("Must change task", async () => {
 });
 
 it("Must delete task", async () => {
+  const storageFirstElem = await taskCalendar.read(taskCalendar.tasksID[0]);
+
+  expect(storageFirstElem).not.toBe([]);
+
   await taskCalendar.delete(taskCalendar.tasksID[0]);
 
   const result = await (
@@ -55,21 +53,18 @@ it("Must filter tasks by data", async () => {
 });
 
 it("Must filter tasks by description", async () => {
-  const result = await taskCalendar.filterByDescription(
-    "Prepare to my birthday!"
-  );
+  const result = await taskCalendar.filterByDescription("Call dad!");
 
-  expect(result[0]).toEqual(someTasks[0]);
+  expect(result[0]).toEqual(someTasks[1]);
 });
 
 it("Must filter tasks by status", async () => {
-  const result = await taskCalendar.filterByStatus("waiting to get it in work");
+  const result = await taskCalendar.filterByStatus("in work");
 
-  expect(result[0]).toEqual(someTasks[0]);
+  expect(result[0]).toEqual(someTasks[2]);
 });
 
 it("Must filter tasks by tag", async () => {
   const result = await taskCalendar.filterByTag("regular priority");
-
-  expect(result[0]).toEqual(someTasks[0]);
+  expect(result).toEqual([someTasks[0], someTasks[3]]);
 });

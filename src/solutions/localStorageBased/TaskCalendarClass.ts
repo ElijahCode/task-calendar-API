@@ -10,11 +10,16 @@ export namespace LocalStorage {
 
     constructor() {
       this.storage = [];
-      localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
+      if(localStorage.getItem("taskCalendar")) {
+        this.storage = JSON.parse(localStorage.getItem('taskCalendar') as string)
+      } else {
+        localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
+      }
     }
 
-    public async createTask(newTask: Task): Promise<Task[]> {
-      this.storage.push(await this.createID(newTask));
+    public async createTask(task: Task): Promise<Task[]> {
+      const newTask = await this.createID(task);
+      this.storage.push(newTask);
       this.tasksID.push(this.storage[this.storage.length - 1].id);
       localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
       return this.storage;

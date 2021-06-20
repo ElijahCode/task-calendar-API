@@ -20,15 +20,19 @@ export namespace LocalStorage {
     }
 
     public async createTask(task: Task): Promise<Task[]> {
+      const newStorage = [...this.storage];
+      const newTasksID = [...this.tasksID];
       if (task.id === undefined) {
         const newTask = await this.createID(task);
-        this.storage.push(newTask);
+        newStorage.push(newTask);
       } else {
-        this.storage.push(task);
+        newStorage.push(task);
       }
-      this.tasksID.push(this.storage[this.storage.length - 1].id);
-      localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
-      return this.storage;
+      newTasksID.push(newStorage[newStorage.length - 1].id);
+      localStorage.setItem("taskCalendar", JSON.stringify(newStorage));
+      this.storage = newStorage;
+      this.tasksID = newTasksID;
+      return newStorage;
     }
 
     public async read(id?: Task["id"]): Promise<Task | Task[]> {

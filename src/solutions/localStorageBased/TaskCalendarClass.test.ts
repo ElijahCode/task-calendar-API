@@ -40,7 +40,7 @@ it("Must change task", async () => {
 
   const resultTask = await taskCalendar.read(taskCalendar.tasksID[0]);
 
-  expect(resultTask.status).toBe("done");
+  expect((resultTask as Task).status).toBe("done");
 });
 
 it("Must delete task", async () => {

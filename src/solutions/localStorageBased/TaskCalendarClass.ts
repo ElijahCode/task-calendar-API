@@ -20,15 +20,16 @@ export namespace LocalStorage {
       return this.storage;
     }
 
-    public async read(id: Task["id"]): Promise<Task> {
-      return this.storage.filter((el: Task) => el.id === id)[0];
+    public async read(id?: Task["id"]): Promise<Task | Task[]> {
+      const result = id ? this.storage.filter((el: Task) => el.id === id)[0] : this.storage;
+      return result;
     }
 
     public async update(
       id: Task["id"],
       updateTask: Partial<Task>
     ): Promise<Task> {
-      const newTask = await this.read(id);
+      const newTask = await this.read(id) as Task;
 
       Object.keys(newTask).forEach((el) => {
         if (updateTask[el]) {

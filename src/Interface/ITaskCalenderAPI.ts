@@ -4,7 +4,7 @@ export interface ITaskCalendar {
   tasksID: string[] | Task["id"][];
 
   createTask(newTask: Task): Promise<Task[]>;
-  read(id: Task["id"] | string): Promise<Task>;
+  read(id: Task["id"] | string): Promise<Task | Task[]>;
   update(id: Task["id"] | string, updatedTask: Partial<Task>): Promise<Task>;
   delete(id: Task["id"] | string): Promise<void>;
 

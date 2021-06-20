@@ -10,23 +10,31 @@ export namespace LocalStorage {
 
     constructor() {
       this.storage = [];
-      if(localStorage.getItem("taskCalendar")) {
-        this.storage = JSON.parse(localStorage.getItem('taskCalendar') as string)
+      if (localStorage.getItem("taskCalendar")) {
+        this.storage = JSON.parse(
+          localStorage.getItem("taskCalendar") as string
+        );
       } else {
         localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
       }
     }
 
     public async createTask(task: Task): Promise<Task[]> {
-      const newTask = await this.createID(task);
-      this.storage.push(newTask);
+      if (task.id === undefined) {
+        const newTask = await this.createID(task);
+        this.storage.push(newTask);
+      } else {
+        this.storage.push(task);
+      }
       this.tasksID.push(this.storage[this.storage.length - 1].id);
       localStorage.setItem("taskCalendar", JSON.stringify(this.storage));
       return this.storage;
     }
 
     public async read(id?: Task["id"]): Promise<Task | Task[]> {
-      const result = id ? this.storage.filter((el: Task) => el.id === id)[0] : this.storage;
+      const result = id
+        ? this.storage.filter((el: Task) => el.id === id)[0]
+        : this.storage;
       return result;
     }
 
@@ -34,7 +42,7 @@ export namespace LocalStorage {
       id: Task["id"],
       updateTask: Partial<Task>
     ): Promise<Task> {
-      const newTask = await this.read(id) as Task;
+      const newTask = (await this.read(id)) as Task;
 
       Object.keys(newTask).forEach((el) => {
         if (updateTask[el]) {

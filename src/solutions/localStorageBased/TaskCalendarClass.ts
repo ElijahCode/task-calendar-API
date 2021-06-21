@@ -46,20 +46,18 @@ export namespace LocalStorage {
       id: Task["id"],
       updateTask: Partial<Task>
     ): Promise<Task> {
-      const newTask = (await this.read(id)) as Task;
-
+      const newTask = { ...((await this.read(id)) as Task) };
+      const storage = [...this.storage];
       Object.keys(newTask).forEach((el) => {
         if (updateTask[el]) {
           newTask[el] = updateTask[el];
         }
       });
-
-      localStorage.setItem(
-        "taskCalendar",
-        JSON.stringify(
-          this.storage.map((el: Task) => (el.id === id ? newTask : el))
-        )
+      const newStorage = storage.map((el: Task) =>
+        el.id === id ? newTask : el
       );
+      localStorage.setItem("taskCalendar", JSON.stringify(newStorage));
+      this.storage = newStorage;
       return newTask;
     }
 
